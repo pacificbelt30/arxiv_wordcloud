@@ -2,6 +2,7 @@ import requests
 import re
 import feedparser
 import json
+import pandas as pd
 
 """ References
 https://info.arxiv.org/help/api/user-manual.html
@@ -19,7 +20,7 @@ sortOrder: 'ascending' | 'descending'
 base = "http://export.arxiv.org/api/query"
 cat = "cs.AI"
 start = 0
-max_results = 2
+max_results = 10
 sort_by = 'lastUpdatedDate'
 sort_order = 'descending'
 
@@ -58,7 +59,22 @@ class ArXiv():
         all_txt = ''
         for txt in self.title_and_summary:
             all_txt += txt
-        unique_word_list = list(set(re.split('[ ,.\n]', all_txt)))[1:]
+        unique_word_list = list(set(re.split('[ ,.\n]', re.sub('\d+', '', re.sub('[^ ,.\n]{0,2}', '', all_txt)))))[1:]
+        print(unique_word_list)
+        # unique_word_listの引数を取る
+
+        table = []
+        print(table)
+        for i in range(len(self.titles)):
+            table.append([])
+            for j in range(len(unique_word_list)):
+                table[i].append(1 if (unique_word_list[j] in self.title_and_summary[i]) else 0)
+        print(table)
+        # print(unique_word_list)
+        df = pd.DataFrame(data=table,index=self.titles, columns=unique_word_list)
+        # df = pd.DataFrame(data=table)
+        print(df)
+        print(df.sum('index').sort_values())
 
     def query(self, query_txt):
         self.query_txt = query_txt if not query_txt == '' else self.query_txt

@@ -4,7 +4,7 @@ from arxiv_api import ArXiv
 base = "http://export.arxiv.org/api/query"
 cat = "cs.AI"
 start = 0
-max_results = 10
+max_results = 20
 sort_by = 'lastUpdatedDate'
 sort_order = 'descending'
 
