@@ -1,4 +1,5 @@
 import requests
+import re
 import feedparser
 import json
 
@@ -42,12 +43,22 @@ class ArXiv():
         return [paper['title'] for paper in self.response_dict['entries']]
 
     @property
+    def urls(self):
+        return [paper['url'] for paper in self.response_dict['entries']]
+
+    @property
     def summaries(self):
         return [paper['summary'] for paper in self.response_dict['entries']]
 
     @property
     def title_and_summary(self):
         return [t+s for t, s in zip(self.titles, self.summaries)]
+
+    def get_table(self):
+        all_txt = ''
+        for txt in self.title_and_summary:
+            all_txt += txt
+        unique_word_list = list(set(re.split('[ ,.\n]', all_txt)))[1:]
 
     def query(self, query_txt):
         self.query_txt = query_txt if not query_txt == '' else self.query_txt
@@ -66,3 +77,4 @@ if __name__ == "__main__":
 
     print(a.response)
     print(json.dumps(feedparser.parse(a.response.text), indent=2))
+    a.get_table()
