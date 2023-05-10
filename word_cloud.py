@@ -27,7 +27,7 @@ class Webhook():
         arxiv.query(query_txt)
 
         # WordCloud作成
-        wordcloud.generate(' '.join(arxiv.titles))
+        wordcloud.generate(' '.join(arxiv.title_and_summary))
         wordcloud.to_file(self.filename)
         return
 
